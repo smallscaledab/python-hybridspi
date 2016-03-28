@@ -1,5 +1,5 @@
 #===============================================================================
-# Python Hybrid Radio SPI - API to support ETSI TS 102 818
+# Python Binary Encoding for Hybrid Radio SPI - API to support ETSI TS 102 370
 # 
 # Copyright (C) 2015, Ben Poor
 # 
@@ -19,7 +19,7 @@
 #===============================================================================
 
 from spi import *
-from spi.xml import marshall
+from spi.binary import marshall
 
 start = datetime.datetime(2014, 4, 25, 6, 0, 0)
 end = datetime.datetime(2014, 4, 25, 13, 0, 0)
@@ -41,8 +41,8 @@ programme.locations.append(location)
 
 programme.descriptions.append(ShortDescription('Forget the coffee, Capital gives you the perfect morning pick-me- up with a blend of the latest hits, travel news and incomparable morning banter.'))
 
-programme.genres.append('urn:tva:metadata:cs:ContentCS:2002:3.6.8')
-programme.genres.append('urn:tva:metadata:cs:IntentionCS:2002:1.1')
+programme.genres.append(Genre('urn:tva:metadata:cs:ContentCS:2002:3.6.8'))
+programme.genres.append(Genre('urn:tva:metadata:cs:IntentionCS:2002:1.1'))
 
 programme.memberships.append(Membership('crid://www.capitalfm.com/4772', 4772))
 

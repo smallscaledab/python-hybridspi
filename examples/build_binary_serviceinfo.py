@@ -1,7 +1,8 @@
 #===============================================================================
 # Python Hybrid Radio SPI - API to support ETSI TS 102 818
 # 
-# Copyright (C) 2015, Ben Poor
+# Copyright (C) 2010 Global Radio
+# Copyright (C) 2015 Ben Poor
 # 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,33 +20,28 @@
 #===============================================================================
 
 from spi import *
-from spi.xml import marshall
-import datetime
+from spi.binary import marshall, Ensemble
+from spi.binary.bands import *
 
-provider = ServiceProvider()
-provider.names.append(ShortName('Global'))
-provider.names.append(MediumName('Global Radio'))
-provider.media.append(Multimedia('http://epg.musicradio.com/logos/global/320x240.png',
-                                 type=Multimedia.LOGO_UNRESTRICTED,
-                                 width=320, height=240,
-                                 content='image/png'))
-provider.media.append(Multimedia('http://epg.musicradio.com/logos/global/32x32.png',
-                                 type=Multimedia.LOGO_COLOUR_SQUARE))
-provider.keywords.extend(['radio', 'television', 'publishing', 'talent', 'charities & communities'])
-provider.links.append(Link('http://www.thisisglobal.com', content='text/html', description='Homepage'))
-provider.links.append(Link('postal:Global%20Radio/30%20Leicester%20Square/London/WC2H%207LA'))
-provider.links.append(Link('tel:+44-020-77666000'))
-provider.geolocations.append(Country('GB'))
-provider.geolocations.append(Point(51.473939, -2.508112))
+import datetime
+import logging
+
+#logging.basicConfig(level=logging.DEBUG)
 
 info = ServiceInfo(originator='Global Radio', 
-                   provider=provider, 
+                   provider='Global Radio', 
                    created=datetime.datetime(2014, 04, 25, 0, 50, 31, 0))
+
+# Ensemble
+ensemble = Ensemble(0xe1, 0xc479)
+ensemble.names.append(ShortName('London 1'))
+ensemble.names.append(MediumName('London 1'))
+ensemble.frequencies.append(BAND_12C)
 
 # Capital London 
 service = Service()
 service.names.append(ShortName('Capital'))
-service.names.append(MediumName('Capital FM'))
+service.names.append(MediumName('Capital'))
 service.names.append(LongName('Capital London'))
 service.descriptions.append(ShortDescription('The UK\'s No.1 Hit Music Station'))
 service.media.append(Multimedia('http://owdo.thisisglobal.com/2.0/id/25/logo/32x32.png',
@@ -68,15 +64,14 @@ service.media.append(Multimedia('http://owdo.thisisglobal.com/2.0/id/25/logo/102
                                 type=Multimedia.LOGO_UNRESTRICTED,
                                 width=1024, height=768,
                                 content='image/png'))
-service.genres.append('urn:tva:metadata:cs:ContentCS:2004:3.6.10')
-service.genres.append('urn:tva:metadata:cs:ContentCS:2004:3.6.8')
-service.genres.append('urn:tva:metadata:cs:ContentCS:2004:3.6.8.14')
-service.genres.append('urn:tva:metadata:cs:ContentCS:2004:3.1.4.12')
+service.genres.append(Genre('urn:tva:metadata:cs:ContentCS:2004:3.6.10'))
+service.genres.append(Genre('urn:tva:metadata:cs:ContentCS:2004:3.6.8'))
+service.genres.append(Genre('urn:tva:metadata:cs:ContentCS:2004:3.6.8.14'))
+service.genres.append(Genre('urn:tva:metadata:cs:ContentCS:2004:3.1.4.12'))
 service.keywords.extend(['London', 'music', 'pop', 'rock', 'dance', 'urban'])
 service.links.append(Link('http://www.capitalfm.com/london', content='text/html'))
 service.links.append(Link('sms:83958'))
 service.bearers.append(DabBearer(0xe1, 0xc185, 0xc479, 0x0, content='audio/mpeg', offset=2000, cost=20)) 
-service.bearers.append(FmBearer(0xe1, 0xc479, 95800, cost=30)) 
 service.bearers.append(IpBearer('http://media-ice.musicradio.com/Capital', content='audio/aacp', offset=4000, cost=40, bitrate=48))
 service.bearers.append(IpBearer('http://media-ice.musicradio.com/CapitalMP3Low', content='audio/mpeg', offset=4000, cost=40, bitrate=48))
 service.lookup = 'http://www.capitalfm.com/london'
@@ -115,4 +110,4 @@ group.services.append(service)
 info.groups.append(group)
 
 
-print marshall(info, indent='\t')
+print marshall(info, ensemble=ensemble)
